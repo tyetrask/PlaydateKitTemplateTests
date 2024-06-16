@@ -2,42 +2,42 @@ import PlaydateKit
 
 // MARK: - Game
 
+class SceneBase {
+    func onSceneUpdate(deltaTime: Float) -> Void {}
+}
+
 final class Game: PlaydateGame {
     // MARK: Lifecycle
 
+    var current: SceneBase
+    
     init() {
-        logo.addToDisplayList()
+        current = MainMenu()
     }
 
     // MARK: Internal
 
-    let logo = Logo()
+    var lastElapsedTime: Float = 0
+    var switchSceneTimer: Float = 0
+    var sceneType = true // Lazy alternation between scene types
 
     func update() -> Bool {
-        Sprite.updateAndDrawDisplayListSprites()
+        let elapsedTime = System.elapsedTime
+        let deltaTime = elapsedTime - lastElapsedTime
+        lastElapsedTime = elapsedTime
+        
+        current.onSceneUpdate(deltaTime: deltaTime)
+        
+        switchSceneTimer += deltaTime
+        if switchSceneTimer > 2.5 {
+            System.log(StaticString("Crash is about to happen"))
+            current = sceneType ? OtherScene() : MainMenu()
+            System.log(StaticString("Crash will have caused this line _not_ to be logged"))
+            sceneType.toggle()
+            switchSceneTimer = 0
+        }
+
         System.drawFPS()
         return true
-    }
-
-    func gameWillPause() {
-        System.log(StaticString("Paused!"))
-    }
-}
-
-// MARK: - Logo
-
-class Logo: Sprite.Sprite {
-    // MARK: Lifecycle
-
-    override init() {
-        super.init()
-        image = try! Graphics.Bitmap(path: "logo.png")
-        bounds = .init(x: 0, y: 0, width: 400, height: 240)
-    }
-
-    // MARK: Internal
-
-    override func update() {
-        moveBy(dx: 0, dy: sinf(System.elapsedTime * 4))
     }
 }
