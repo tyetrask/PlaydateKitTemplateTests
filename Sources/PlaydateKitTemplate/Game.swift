@@ -3,41 +3,18 @@ import PlaydateKit
 // MARK: - Game
 
 final class Game: PlaydateGame {
-    // MARK: Lifecycle
-
-    init() {
-        logo.addToDisplayList()
-    }
-
     // MARK: Internal
-
-    let logo = Logo()
-
     func update() -> Bool {
-        Sprite.updateAndDrawDisplayListSprites()
+        let randomInt = Int.random(in: 1...3)
+        if randomInt == 1 {
+            System.log(StaticString("randomInt: 1"))
+        } else if randomInt == 2 {
+            System.log(StaticString("randomInt: 2"))
+        } else if randomInt == 3 {
+            System.log(StaticString("randomInt: 3"))
+        }
+        
         System.drawFPS()
         return true
-    }
-
-    func gameWillPause() {
-        System.log(StaticString("Paused!"))
-    }
-}
-
-// MARK: - Logo
-
-class Logo: Sprite.Sprite {
-    // MARK: Lifecycle
-
-    override init() {
-        super.init()
-        image = try! Graphics.Bitmap(path: "logo.png")
-        bounds = .init(x: 0, y: 0, width: 400, height: 240)
-    }
-
-    // MARK: Internal
-
-    override func update() {
-        moveBy(dx: 0, dy: sinf(System.elapsedTime * 4))
     }
 }
