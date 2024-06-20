@@ -3,41 +3,20 @@ import PlaydateKit
 // MARK: - Game
 
 final class Game: PlaydateGame {
-    // MARK: Lifecycle
-
-    init() {
-        logo.addToDisplayList()
-    }
-
     // MARK: Internal
-
-    let logo = Logo()
 
     func update() -> Bool {
-        Sprite.updateAndDrawDisplayListSprites()
+        Graphics.clear(color: .black)
+        
+        let poly = Polygon<CInt>(vertices: [
+            Point(x: 200, y: 200),
+            Point(x: 210, y: 200),
+            Point(x: 210, y: 210),
+            Point(x: 200, y: 210)
+        ])
+        Graphics.fillPolygon(poly, color: .white, fillRule: .nonZero)
+        
         System.drawFPS()
         return true
-    }
-
-    func gameWillPause() {
-        System.log(StaticString("Paused!"))
-    }
-}
-
-// MARK: - Logo
-
-class Logo: Sprite.Sprite {
-    // MARK: Lifecycle
-
-    override init() {
-        super.init()
-        image = try! Graphics.Bitmap(path: "logo.png")
-        bounds = .init(x: 0, y: 0, width: 400, height: 240)
-    }
-
-    // MARK: Internal
-
-    override func update() {
-        moveBy(dx: 0, dy: sinf(System.elapsedTime * 4))
     }
 }
